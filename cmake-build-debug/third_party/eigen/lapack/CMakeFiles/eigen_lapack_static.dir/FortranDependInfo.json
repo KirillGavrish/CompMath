@@ -1,0 +1,24 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"dir-cur-bld" : "/Users/bennington2000super/Documents/5 \u0441\u0435\u043c\u0435\u0441\u0442\u0440/\u0412\u044b\u0447\u043c\u0430\u0442\u044b/labs/cmake-build-debug/third_party/eigen/lapack",
+	"dir-cur-src" : "/Users/bennington2000super/Documents/5 \u0441\u0435\u043c\u0435\u0441\u0442\u0440/\u0412\u044b\u0447\u043c\u0430\u0442\u044b/labs/third_party/eigen/lapack",
+	"dir-top-bld" : "/Users/bennington2000super/Documents/5 \u0441\u0435\u043c\u0435\u0441\u0442\u0440/\u0412\u044b\u0447\u043c\u0430\u0442\u044b/labs/cmake-build-debug",
+	"dir-top-src" : "/Users/bennington2000super/Documents/5 \u0441\u0435\u043c\u0435\u0441\u0442\u0440/\u0412\u044b\u0447\u043c\u0430\u0442\u044b/labs",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/Users/bennington2000super/Documents/5 \u0441\u0435\u043c\u0435\u0441\u0442\u0440/\u0412\u044b\u0447\u043c\u0430\u0442\u044b/labs/third_party/eigen",
+		"/Users/bennington2000super/Documents/5 \u0441\u0435\u043c\u0435\u0441\u0442\u0440/\u0412\u044b\u0447\u043c\u0430\u0442\u044b/labs/third_party/eigen/lapack/../blas"
+	],
+	"language" : "Fortran",
+	"linked-target-dirs" : [],
+	"module-dir" : "/Users/bennington2000super/Documents/5 \u0441\u0435\u043c\u0435\u0441\u0442\u0440/\u0412\u044b\u0447\u043c\u0430\u0442\u044b/labs/cmake-build-debug/third_party/eigen/lapack",
+	"submodule-ext" : ".smod",
+	"submodule-sep" : "@"
+}
