@@ -27,7 +27,6 @@ decltype(auto) integrate(
     const Callable& func,
     const typename ArgumentGetter<Callable>::Argument& start,
     const typename ArgumentGetter<Callable>::Argument& end
-)
 {
 
 }
