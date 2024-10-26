@@ -5,7 +5,7 @@
 
 using u32 = std::uint32_t;
 
-template<typename xType, typename yType, unsigned int N>
+template<typename xType, typename yType, u32 N>
 class HermiteInterpolator {
     std::array<xType, 2 * N> z;
     std::array<yType, 2 * N> coefs;
@@ -14,12 +14,12 @@ public:
     yType interpolate(xType const &) const noexcept;
 };
 
-template<typename xType, typename yType, unsigned int N>
+template<typename xType, typename yType, u32 N>
 HermiteInterpolator<xType, yType, N>::HermiteInterpolator(
     std::array<xType, N> const &points,
     std::array<yType, N> const &values,
     std::array<yType, N> const &deriv
-) noexcept
+    ) noexcept
 {
     for (int i = 0; i < N; ++i)
     {

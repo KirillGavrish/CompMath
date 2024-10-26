@@ -3,10 +3,6 @@
 #include <vector>
 #include <type_traits>
 #include <cstdint>
-#include <vector>
-#include <type_traits>
-#include <iostream>
-#include "Eigen/Dense"
 
 using u32 = std::uint32_t;
 
@@ -90,7 +86,7 @@ public:
         coeffs_[size_ - 1].c = 0;
 
         std::vector<yType> u(size_ - 2);
-        std::vector<xType> upThreeDiagVect(size_ - 3), centralThreeDiagVect(size_ - 2, 2), downThreeDiagVect(size_ - 3);
+        std::vector<xType> a(size_ - 3), b(size_ - 2, 2), c(size_ - 3);
 
         std::vector<DeltaXType> h(size_);
         std::vector<DiffType<yType>> sepDifferences(size_);
@@ -104,12 +100,12 @@ public:
         u[0] = 6 * (sepDifferences[2] - sepDifferences[1]) / (points_[2] - points_[0]);
         for (u32 i = 0; i < size_ - 3; ++i)
         {
-            upThreeDiagVect[i] = h[i + 2] / (h[i + 2] + h[i + 1]);
-            downThreeDiagVect[i] = h[i + 1] / (h[i + 2] + h[i + 1]);
+            a[i] = h[i + 2] / (h[i + 2] + h[i + 1]);
+            c[i] = h[i + 1] / (h[i + 2] + h[i + 1]);
             u[i + 1] = 6 * (sepDifferences[i + 3] - sepDifferences[i + 2]) / (points_[i + 3] - points_[i + 1]);
         }
 
-        ThreeDiagonalMatrix<xType> threeDiagM(upThreeDiagVect, centralThreeDiagVect, downThreeDiagVect);
+        ThreeDiagonalMatrix<xType> threeDiagM(a, b, c);
         std::vector<Deriv2Type> solution = solveThreeDiagonalMatrix(threeDiagM, u);
 
         for (u32 i = 1; i < size_ - 1; ++i)
