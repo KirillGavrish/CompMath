@@ -1,5 +1,6 @@
-#include "gtest/gtest.h"
-#include "labs/DerivativeCoef/DerivativeCoef.h"
+#include "../third_party/googletest/googletest/include/gtest/gtest.h"
+#include "../src/labs/DerivativeCoef/DerivativeCoef.h"
+
 TEST(calcDerivativeCoef, TEST_EXAMPLE)
 {
     std::array<double, 2> constexpr a = {-1, 1};
@@ -8,5 +9,4 @@ TEST(calcDerivativeCoef, TEST_EXAMPLE)
     std::array<double, 2> constexpr expectedOthercoefs = {1, 1};
     EXPECT_EQ(coefs.otherCoefs, expectedOthercoefs);
 }
-
 

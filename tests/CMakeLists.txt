@@ -11,7 +11,7 @@ foreach (TEST_FILE IN LISTS TEST_SOURCES)
 
     add_executable(${EXECUTABLE_NAME} ${TEST_FILE})
 
-    target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${PROJECT_NAME} GTest::gtest_main gtest gtest_main)
+    target_link_libraries(${EXECUTABLE_NAME} PRIVATE labs GTest::gtest_main gtest gtest_main)
 
     add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 endforeach ()

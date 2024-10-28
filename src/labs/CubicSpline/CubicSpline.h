@@ -18,14 +18,28 @@ public:
         : a_(a), b_(b), c_(c)
     {}
 
-    std::vector<T> const &a() const{return a_;}
-    std::vector<T> const &b() const{return b_;}
-    std::vector<T> const &c() const{return c_;}
+    std::vector<T> const &a() const;
+    std::vector<T> const &b() const;
+    std::vector<T> const &c() const;
 
-    T const &a(const std::size_t& i) const {return a_[i];}
-    T const &b(const std::size_t& i) const {return b_[i];}
-    T const &c(const std::size_t& i) const {return c_[i];}
+    T const &a(std::size_t const &) const;
+    T const &b(std::size_t const &) const;
+    T const &c(std::size_t const &) const;
 };
+
+template<typename T>
+std::vector<T> const &ThreeDiagonalMatrix<T>::a() const {return a_;}
+template<typename T>
+std::vector<T> const &ThreeDiagonalMatrix<T>::b() const {return b_;}
+template<typename T>
+std::vector<T> const &ThreeDiagonalMatrix<T>::c() const {return c_;}
+
+template<typename T>
+T const &ThreeDiagonalMatrix<T>::a(std::size_t const &i) const {return a_[i];}
+template<typename T>
+T const &ThreeDiagonalMatrix<T>::b(std::size_t const &i) const {return b_[i];}
+template<typename T>
+T const &ThreeDiagonalMatrix<T>::c(std::size_t const &i) const {return c_[i];}
 
 template<typename numeratorType, typename denominatorType>
 using DivisType = decltype(std::declval<numeratorType>() / std::declval<denominatorType>());
@@ -55,7 +69,6 @@ std::vector<DivisType<cType, mType>> solveThreeDiagonalMatrix(ThreeDiagonalMatri
     return x;
 }
 
-
 template<typename xType, typename yType>
 class CubicSpline
 {
@@ -75,114 +88,70 @@ class CubicSpline
     };
     std::vector<Coeffs> coeffs_;
 public:
-    CubicSpline( const std::vector<xType> &points,
-                 const std::vector<yType>& values
-    ) :points_(points)
-    {
-        size_ = points.size();
-        coeffs_.resize(size_);
-
-        coeffs_[0].c = 0;
-        coeffs_[size_ - 1].c = 0;
-
-        std::vector<yType> u(size_ - 2);
-        std::vector<xType> a(size_ - 3), b(size_ - 2, 2), c(size_ - 3);
-
-        std::vector<DeltaXType> h(size_);
-        std::vector<DiffType<yType>> sepDifferences(size_);
-
-        for(u32 i = 1; i < size_; ++i)
-        {
-            h[i] = points_[i] - points_[i - 1];
-            sepDifferences[i] = (values[i] - values[i - 1]) / h[i];
-        }
-
-        u[0] = 6 * (sepDifferences[2] - sepDifferences[1]) / (points_[2] - points_[0]);
-        for (u32 i = 0; i < size_ - 3; ++i)
-        {
-            a[i] = h[i + 2] / (h[i + 2] + h[i + 1]);
-            c[i] = h[i + 1] / (h[i + 2] + h[i + 1]);
-            u[i + 1] = 6 * (sepDifferences[i + 3] - sepDifferences[i + 2]) / (points_[i + 3] - points_[i + 1]);
-        }
-
-        ThreeDiagonalMatrix<xType> threeDiagM(a, b, c);
-        std::vector<Deriv2Type> solution = solveThreeDiagonalMatrix(threeDiagM, u);
-
-        for (u32 i = 1; i < size_ - 1; ++i)
-        {
-            coeffs_[i].c = solution[i - 1];
-            coeffs_[i].d = (coeffs_[i].c - coeffs_[i - 1].c) / h[i];
-            coeffs_[i].a = values[i];
-            coeffs_[i].b = h[i] / 3 * (coeffs_[i].c + coeffs_[i - 1].c / 2) + sepDifferences[i];
-        }
-
-        coeffs_[size_ - 1].a = values[size_ - 1];
-        coeffs_[size_ - 1].b = h[size_ - 1] / 3 * (coeffs_[size_ - 1].c + coeffs_[size_ - 2].c / 2) + sepDifferences[size_ - 1];
-        coeffs_[size_ - 1].d = (coeffs_[size_ - 1].c - coeffs_[size_ - 2].c) / h[size_ - 1];
-    }
-
-    CubicSpline(std::vector<xType> const &points,
-                std::vector<yType> const &values,
-                Deriv2Type const &first,
-                Deriv2Type const &second
-    ) : points_(points)
-    {
-        size_ = points.size();
-        coeffs_.resize(size_);
-
-        coeffs_[0].c = first;
-        coeffs_[size_ - 1].c = second;
-
-        std::vector<yType> u(size_ - 2);
-        std::vector<xType> a(size_ - 3), b(size_ - 2, 2), c(size_ - 3);
-
-        std::vector<DeltaXType> h(size_);
-        std::vector<DiffType<yType>> sepDifferences(size_);
-
-        for(u32 i = 1; i < size_; ++i)
-        {
-            h[i] = points_[i] - points_[i - 1];
-            sepDifferences[i] = (values[i] - values[i - 1]) / h[i];
-        }
-
-        u[0] = 6 * (sepDifferences[2] - sepDifferences[1]) / (points_[2] - points_[0]);
-        for (u32 i = 0; i < size_ - 3; ++i)
-        {
-            a[i] = h[i + 2] / (h[i + 2] + h[i + 1]);
-            c[i] = h[i + 1] / (h[i + 2] + h[i + 1]);
-            u[i + 1] = 6 * (sepDifferences[i + 3] - sepDifferences[i + 2]) / (points_[i + 3] - points_[i + 1]);
-        }
-
-        ThreeDiagonalMatrix<xType> threeDiagM(a, b, c);
-        std::vector<Deriv2Type> solution = solveThreeDiagonalMatrix(threeDiagM, u);
-
-        for (u32 i = 1; i < size_ - 1; ++i)
-        {
-            coeffs_[i].c = solution[i - 1];
-            coeffs_[i].d = (coeffs_[i].c - coeffs_[i - 1].c)/ h[i];
-            coeffs_[i].a = values[i];
-            coeffs_[i].b = h[i] / 3 * (coeffs_[i].c + coeffs_[i - 1].c / 2) + sepDifferences[i];
-        }
-
-        coeffs_[size_ - 1].a = values[size_ - 1];
-        coeffs_[size_ - 1].b = h[size_ - 1] / 3 * (coeffs_[size_ - 1].c + coeffs_[size_ - 2].c / 2) + sepDifferences[size_ - 1];
-        coeffs_[size_ - 1].d = (coeffs_[size_ - 1].c - coeffs_[size_ - 2].c) / h[size_ - 1];
-    }
-
-    yType interpolate(xType const &x) const noexcept
-    {
-        u32 n;
-        for (u32 i = 1; i < size_; ++i)
-        {
-            if ((points_[i - 1] <= x) && (x <= points_[i]))
-            {
-                n = i;
-                break;
-            }
-        }
-        DiffType<xType> dx = (x - points_[n]);
-        return coeffs_[n].a + coeffs_[n].b * dx + coeffs_[n].c / 2 * dx * dx + coeffs_[n].d / 6 * dx * dx * dx;
-    }
+    CubicSpline(std::vector<xType> const &, std::vector<yType> const &, Deriv2Type const &, Deriv2Type const &);
+    yType interpolate(xType const &) const noexcept;
 };
+
+template<typename xType, typename yType>
+CubicSpline<xType, yType>::CubicSpline(std::vector<xType> const &points,
+    std::vector<yType> const &values,
+    Deriv2Type const &first,
+    Deriv2Type const &second
+    ) : points_(points)
+{
+    size_ = points.size();
+    coeffs_.resize(size_);
+
+    coeffs_[0].c = first;
+    coeffs_[size_ - 1].c = second;
+
+    std::vector<yType> u(size_ - 2);
+    std::vector<xType> a(size_ - 3), b(size_ - 2, 2), c(size_ - 3);
+
+    std::vector<DeltaXType> h(size_);
+    std::vector<DiffType<yType>> sepDifferences(size_);
+
+    for(int i = 1; i < size_; i++){
+        h[i] = points_[i] - points_[i - 1];
+        sepDifferences[i] = (values[i] - values[i - 1]) / h[i];
+    }
+
+    u[0] = 6 * (sepDifferences[2] - sepDifferences[1]) / (points_[2] - points_[0]);
+    for(int i = 0; i < size_ - 3; i++){
+        a[i] = h[i + 2] / (h[i + 2] + h[i + 1]);
+        c[i] = h[i + 1] / (h[i + 2] + h[i + 1]);
+        u[i + 1] = 6 * (sepDifferences[i + 3] - sepDifferences[i + 2]) / (points_[i + 3] - points_[i + 1]);
+    }
+
+    ThreeDiagonalMatrix<xType> threeDiagM(a, b, c);
+    std::vector<Deriv2Type> solution = solveThreeDiagonalMatrix(threeDiagM, u);
+
+    for(int i = 1; i < size_ - 1; i++){
+        coeffs_[i].c = solution[i - 1];
+        coeffs_[i].d = (coeffs_[i].c - coeffs_[i - 1].c) / h[i];
+        coeffs_[i].a = values[i];
+        coeffs_[i].b = h[i] / 3 * (coeffs_[i].c + coeffs_[i - 1].c / 2) + sepDifferences[i];
+    }
+
+    coeffs_[size_ - 1].a = values[size_ - 1];
+    coeffs_[size_ - 1].b = h[size_ - 1] / 3 * (coeffs_[size_ - 1].c + coeffs_[size_ - 2].c / 2) + sepDifferences[size_ - 1];
+    coeffs_[size_ - 1].d = (coeffs_[size_ - 1].c - coeffs_[size_ - 2].c) / h[size_ - 1];
+}
+
+template<typename xType, typename yType>
+yType CubicSpline<xType, yType>::interpolate(xType const &x) const noexcept
+{
+    u32 n;
+    for (u32 i = 1; i < size_; ++i)
+    {
+        if ((points_[i - 1] <= x) && (x <= points_[i]))
+        {
+            n = i;
+            break;
+        }
+    }
+    DiffType<xType> dx = (x - points_[n]);
+    return coeffs_[n].a + coeffs_[n].b * dx + coeffs_[n].c / 2 * dx * dx + coeffs_[n].d / 6 * dx * dx * dx;
+}
 
 #endif //CUBICSPLINE_H
